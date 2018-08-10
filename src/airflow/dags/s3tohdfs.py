@@ -25,8 +25,12 @@ s3fetch_params = {
     'src_pattern' : r'.*\.ZIP'
 }
 
-# Pre-step - clear destination
-cleanHdfs_tmpl = 'hdfs dfs -rm -skipTrash {{ params.hdfs_destination }}/*'
+# Pre-step - clear destination (but ignore errors)
+cleanHdfs_tmpl = """
+    hdfs dfs -rm -skipTrash {{ params.hdfs_destination }}/*
+    echo "hdfs -rm returned: $?"
+    exit 0
+"""
 cleanHdfs = BashOperator(
     task_id = 'clean_hdfs',
     bash_command=cleanHdfs_tmpl,

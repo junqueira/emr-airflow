@@ -26,10 +26,10 @@ s3fetch_params = {
 }
 
 # Pre-step - clear destination
-pushtohdfs_tmpl = 'hdfs dfs -rm -skipTrash {{ params.hdfs_destination }}/*'
+cleanHdfs_tmpl = 'hdfs dfs -rm -skipTrash {{ params.hdfs_destination }}/*'
 cleanHdfs = BashOperator(
-    task_id = 'local_to_hdfs',
-    bash_command=pushtohdfs_tmpl,
+    task_id = 'clean_hdfs',
+    bash_command=cleanHdfs_tmpl,
     params=s3fetch_params,
     dag=dag
 )

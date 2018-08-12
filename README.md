@@ -6,6 +6,13 @@ Repo containing Amazon EMR and Apache Airflow related code
 
 [Apache Airflow](https://airflow.apache.org)
 
+Airflow 1.9
+
+Requires:
+
+* Gunicorn 19.4
+  * Had to update from 19.3 to 19.4 using `pip install gunicorn==19.41`
+
 ### Validating a DAG
 
 A DAG can be initially valiated using the airflow `list_tasks` command:

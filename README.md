@@ -5,6 +5,28 @@ Repo containing Amazon EMR and Apache Airflow related code
 
 https://airflow.apache.org
 
+## Validating a DAG
+
+A DAG can be initially valiated using the airflow `list_tasks` command:
+```
+airflow list_tasks s3tohdfs --tree
+```
+
+## Connecting to Hive
+
+Make sure the hive integration is installed using the following command:
+
+```
+sudo pip install airflow[hive]
+```
+
+If the error `ImportError: cannot import name CSRFProtect` is received in ensure Flask-WTF is at least 0.14:
+
+```
+pip install Flask-WTF==0.14
+```
+
+
 # S3 to HDFS on EMR
 
 Amazon's s3-dist-cp tool, which comes installed on EMR can be used to quickly copy/move files to or from S3 and HDFS.

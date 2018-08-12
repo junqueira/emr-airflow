@@ -80,6 +80,7 @@ hql = """
 """
 
 createTable = HiveOperator(
+    task_id='hive_create_ext_table'
     hql = hql,
     params=s3fetch_params,
     dag=dag

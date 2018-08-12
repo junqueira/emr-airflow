@@ -13,6 +13,29 @@ Requires:
 * Gunicorn 19.4
   * Had to update from 19.3 to 19.4 using `pip install gunicorn==19.41`
 
+### Configuration Updates
+
+```{ini}
+airflow_home = /airflow
+
+fernet_key = {generated key using fernet_key_generator.py}
+
+[webserver]
+# change the base_url to make Log links work from admin UI.
+base_url = {EC2 DNS + port}
+
+web_server_host = {IP of EC2 instance}
+
+# changed to avoid collision with tomcat
+web_server_port = 8008 
+
+[smtp]
+smtp_host = {AWS SES SMTP host}
+
+smtp_user = {AWS SES user}
+smtp_password = {AWS SES passwd}
+```
+
 ### Validating a DAG
 
 A DAG can be initially valiated using the airflow `list_tasks` command:

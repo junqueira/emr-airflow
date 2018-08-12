@@ -1,12 +1,13 @@
 from airflow import DAG
 
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators import HiveOperator
 
 from datetime import datetime, timedelta
 
 default_args = {
     'owner' : 'airflow',
-    'depends_on_past' : False,
+    'depends_on_past' : True,
     'start_date' : datetime(2018, 8, 3),
     'email' : ['daniel@dittenhafersolutions.com'],
     'email_on_failure' : True,
@@ -20,7 +21,7 @@ dag = DAG('s3tohdfs', default_args=default_args, schedule_interval=timedelta(1))
 
 # Some params related to this dag... but not generic enough to make it into the default_args
 s3fetch_params = {
-    's3_bucket' : 's3://dwdii/airflow',
+    's3_bucket' : 's3://dwdii/airflow_raw',
     'hdfs_destination' : '/user/hadoop/temp',
     'src_pattern' : r'.*\.ZIP'
 }
@@ -38,7 +39,7 @@ cleanHdfs = BashOperator(
     dag=dag
 )
 
-# First and only task thanks to s3-dist-cp from Amazon
+# Task - s3-dist-cp from Amazon
 # s3fetch = 's3-dist-cp --src s3://dwdii/putevt --dest /user/hadoop/temp --srcPattern .*\.ZIP'
 s3fetch_tmpl = """
     echo "s3_bucket: {{ params.s3_bucket }}"
@@ -54,4 +55,37 @@ t1 = BashOperator(
     dag=dag
 )
 
+# HiveOperator
+hql = """
+    CREATE EXTERNAL TABLE IF NOT EXISTS dwdii2.noaa_temps 
+    (
+        station string,
+        year int,
+        jan string,
+        feb string,
+        mar string,
+        apr string,
+        may string,
+        jun string,
+        jul string,
+        aug string,
+        sep string,
+        oct string,
+        nov string,
+        dec string
+    ) 
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY ' '
+    STORED AS TEXTFILE
+    LOCATION '/user/hadoop/temp/';
+"""
+
+createTable = HiveOperator(
+    hql = hql,
+    params=s3fetch_params,
+    dag=dag
+)
+
+
 t1.set_upstream(cleanHdfs)
+createTable.set_upstream(t1)
+

@@ -22,13 +22,14 @@ dag = DAG('s3tohdfs', default_args=default_args, schedule_interval=timedelta(1))
 # Some params related to this dag... but not generic enough to make it into the default_args
 s3fetch_params = {
     's3_bucket' : 's3://dwdii/airflow_raw',
-    'hdfs_destination' : '/user/hadoop/temp',
+    'hdfs_destination' : '/user/hadoop/temp/airflow_raw',
     'src_pattern' : r'.*\.ZIP'
 }
 
 # Pre-step - clear destination (but ignore errors)
+# Ensure the partition folder matches that of s3fetch_tmpl and the CREATE TABLE below
 cleanHdfs_tmpl = """
-    hdfs dfs -rm -skipTrash {{ params.hdfs_destination }}/*
+    hdfs dfs -rm -skipTrash {{ params.hdfs_destination }}/exdt={{ ds }}/*
     echo "hdfs -rm returned: $?"
     exit 0
 """
@@ -45,7 +46,7 @@ s3fetch_tmpl = """
     echo "s3_bucket: {{ params.s3_bucket }}"
     echo "hdfs_dest: {{ params.hdfs_destination }}"
     echo " src_ptrn: {{ params.src_pattern }}"
-    s3-dist-cp --src {{ params.s3_bucket }} --dest {{ params.hdfs_destination }} --srcPattern {{ params.src_pattern }}
+    s3-dist-cp --src {{ params.s3_bucket }} --dest {{ params.hdfs_destination }}/exdt={{ ds }} --srcPattern {{ params.src_pattern }}
 """
 
 t1 = BashOperator(
@@ -73,7 +74,7 @@ hql = """
         oct string,
         nov string,
         dec string
-    ) 
+    ) PARTITIONED BY (exdt string)
     ROW FORMAT DELIMITED FIELDS TERMINATED BY ' '
     STORED AS TEXTFILE
     LOCATION '/user/hadoop/temp/';

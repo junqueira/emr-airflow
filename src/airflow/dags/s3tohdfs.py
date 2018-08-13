@@ -23,7 +23,7 @@ dag = DAG('s3tohdfs', default_args=default_args, schedule_interval=timedelta(1))
 s3fetch_params = {
     's3_bucket' : 's3://dwdii/airflow_raw',
     'hdfs_destination' : '/user/hadoop/temp/airflow_raw',
-    'src_pattern' : r'.*\.ZIP'
+    'src_pattern' : r'.*\.txt'
 }
 
 # Pre-step - clear destination (but ignore errors)

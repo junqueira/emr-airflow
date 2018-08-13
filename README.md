@@ -18,7 +18,7 @@ Requires:
 ```{ini}
 airflow_home = /airflow
 
-fernet_key = {generated key using fernet_key_generator.py}
+fernet_key = {generated key using src/airflow/fernet_key_gen.py}
 
 [webserver]
 # change the base_url to make Log links work from admin UI.

@@ -77,7 +77,7 @@ hql = """
     ) PARTITIONED BY (exdt string)
     ROW FORMAT DELIMITED FIELDS TERMINATED BY ' '
     STORED AS TEXTFILE
-    LOCATION '/user/hadoop/temp/';
+    LOCATION '{{ params.hdfs_destination }}';
 """
 
 createTable = HiveOperator(

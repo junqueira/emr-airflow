@@ -81,3 +81,19 @@ s3-dist-cp --src s3://dwdii/putevt --dest /user/hadoop/temp --srcPattern .*\.ZIP
  [https://stackoverflow.com/questions/48901249/s3distcp-on-local-hadoop-cluster-not-working](https://stackoverflow.com/questions/48901249/s3distcp-on-local-hadoop-cluster-not-working)
 
  [https://stackoverflow.com/questions/51041257/copying-files-from-hdfs-to-s3-on-emr-cluster-using-s3distcp](https://stackoverflow.com/questions/51041257/copying-files-from-hdfs-to-s3-on-emr-cluster-using-s3distcp)
+
+## Hive
+
+### Connecting from Python
+
+```
+yum install cyrus-sasl-devel.x86_64
+pip install sasl
+pip install thrift_sasl
+pip install PyHive
+```
+
+For Windows development use `sasl-0.2.1-cp27-cp27m-win_amd64.whl` instead of sasl (above), downloaded from:
+Sasl from [https://www.lfd.uci.edu/~gohlke/pythonlibs/#sasl](https://www.lfd.uci.edu/~gohlke/pythonlibs/#sasl)
+
+PyHive seems to require thrift 0.11. If you are getting a `ImportError: Cannot import name TFrozenDict` error, your thrift version might not be sufficent. 
